@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const authRoute = require("./routes/auth.route");
 const usersRoute = require("./routes/user.route");
+const productsRoute = require("./routes/products.route")
 
 
 const port = process.env.PORT | 5000;
@@ -18,6 +19,7 @@ app.use(express.json());
 
 app.use("/auth", authRoute);
 app.use("/users", usersRoute);
+app.use("/products", productsRoute);
 
 // START SERVER
 const startServer = async () => {

@@ -10,6 +10,8 @@ const verifyToken = async (req, res, next) => {
 
   try {
     const isMatchToken = await jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+    req.id = isMatchToken._id;
+    req.userName = isMatchToken.userName;
     next();
   } catch (err) {
     console.log(err);

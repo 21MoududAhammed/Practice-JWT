@@ -33,18 +33,19 @@ router.post("/login", async (req, res) => {
   const { userName, password } = req.body;
   try {
     const user = await userModel.findOne({ userName: userName });
-    const { name } = user;
-
+    
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
+
+    const { _id } = user;
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       res.status(401).json({ message: "Authentication Failed." });
     }
 
-    const token = jwt.sign({ userName, name }, process.env.JWT_PRIVATE_KEY);
+    const token = jwt.sign({ _id, userName }, process.env.JWT_PRIVATE_KEY, {expiresIn: "1h"});
 
     res
       .status(200)
