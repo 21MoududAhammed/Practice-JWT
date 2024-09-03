@@ -1,6 +1,7 @@
 const express = require("express");
 const productsModel = require("../models/products.model");
 const verifyToken = require("../middlewares/auth.middleware");
+const mongoose = require("mongoose");
 
 const router = express.Router();
 
@@ -46,5 +47,25 @@ router.get("/:id", verifyToken, async (req, res) => {
     res.status(500).json({ message: `Server side error: ${err?.message}` });
   }
 });
+
+// delete a product by id
+router.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid id format." });
+    }
+    const result = await productsModel.findByIdAndDelete({ _id: id });
+    if (!result) {
+      return res.status(404).json({ message: "Product not found!" });
+    }
+    res.status(200).json({ message: "Deleted Successfully!" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: `Server side error: ${err?.message}` });
+  }
+});
+
 
 module.exports = router;
